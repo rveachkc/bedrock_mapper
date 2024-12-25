@@ -1,0 +1,30 @@
+[build-system]
+requires = ["setuptools>=64", "setuptools-scm>=8"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "bedrock_mapper"
+dynamic = ["version"]
+description = "Map Minecraft Bedrock World"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "rv-script-utils>=0.1.0",
+    "setuptools-scm>=8.1.0",
+]
+license = {file = "LICENSE"}
+keywords = ["minecraft", "bedrock"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
+    "Programming Language :: Python :: 3",
+]
+
+[project.scripts]
+bedrock-mapper = "bedrock_mapper:main_cli"
+
+[tool.uv]
+dev-dependencies = [
+    "ruff>=0.8.4",
+]
