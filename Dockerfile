@@ -1,15 +1,15 @@
-FROM ghcr.io/astral-sh/uv:latest AS builder
+FROM ghcr.io/astral-sh/uv:bookworm-slim AS builder
 
 WORKDIR /app
 
-COPY pyproject.toml uv.lock .python-version README.md LICENSE ./
+
+COPY pyproject.toml uv.lock ./
 COPY src ./src
 
 RUN uv build --wheel
 
-COPY --from=builder --chown=app:app /app/.venv /app/.venv
+FROM python:3.13-slim-bookworm
 
-FROM debian:bookworm-slim
 
 # Set environment variables
 ENV DEBIAN_FRONTEND=noninteractive \
@@ -38,6 +38,8 @@ RUN wget -q https://github.com/HiveGamesOSS/Chunker/releases/download/${CHUNKER_
     -O ${CHUNKER_CLI_JAR} \
     && chmod +x ${CHUNKER_CLI_JAR}
 
+# Copy the wheel from the builder stage
+COPY --from=builder /app/dist/*.whl /app/
 
-# https://github.com/HiveGamesOSS/Chunker/releases/download/1.4.3/chunker-cli-1.4.3.jar
-# https://github.com/HiveGamesOSS/Chunker/releases/download/1.43/chunker-cli-1.43.jar
+# Install the wheel
+RUN pip install --no-cache-dir /app/*.whl
